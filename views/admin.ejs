@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — Notice Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+
+    *, *::before, *::after { 
+    box-sizing: border-box; margin: 0; padding: 0; 
+    }
+
+    :root {
+      --indigo:       #4f46e5;
+      --indigo-dark:  #3730a3;
+      --indigo-light: #eef2ff;
+      --indigo-mid:   #818cf8;
+      --violet:       #7c3aed;
+      --violet-light: #f5f3ff;
+      --coral:        #f97316;
+      --coral-light:  #fff7ed;
+      --coral-dark:   #c2410c;
+      --teal:         #0d9488;
+      --teal-light:   #f0fdfa;
+      --green:        #059669;
+      --green-light:  #ecfdf5;
+      --green-dark:   #047857;
+      --red:          #e11d48;
+      --red-light:    #fff1f2;
+      --red-dark:     #be123c;
+      --amber:        #d97706;
+      --amber-light:  #fffbeb;
+      --bg:           #f8f7ff;
+      --surface:      #ffffff;
+      --surface-2:    #f9f8ff;
+      --border:       rgba(79,70,229,0.09);
+      --border-hover: rgba(79,70,229,0.20);
+      --text-dark:    #1e1b4b;
+      --text-soft:    #6d6a8a;
+      --text-muted:   #a5a3bb;
+      --shadow-sm: 0 1px 4px rgba(79,70,229,0.06);
+      --shadow-md: 0 6px 24px rgba(79,70,229,0.10), 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text-dark);
+      padding-bottom: 4rem;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      animation: slideDown 0.4s ease both;
+    }
+
+    .topbar-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--coral) 0%, #fb923c 100%);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(249,115,22,0.30);
+    }
+    .brand-icon svg { width: 18px; height: 18px; color: #fff; }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: var(--text-dark);
+    }
+
+    .admin-chip {
+      font-size: 0.67rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: linear-gradient(135deg, var(--coral-light), #ffe8d6);
+      color: var(--coral);
+      padding: 3px 9px; border-radius: 20px;
+      border: 1px solid rgba(249,115,22,0.18);
+    }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+    .btn-create {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px;
+      background: linear-gradient(135deg, var(--green) 0%, #10b981 100%);
+      color: #fff;
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: 0.81rem; font-weight: 600;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(5,150,105,0.25);
+    }
+    .btn-create:hover { background: linear-gradient(135deg, var(--green-dark), var(--green)); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(5,150,105,0.30); }
+    .btn-create svg { width: 14px; height: 14px; }
+
+    .btn-logout {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: var(--surface);
+      color: var(--red);
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: 0.81rem; font-weight: 500;
+      border: 1.5px solid rgba(225,29,72,0.20);
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { background: var(--red-light); border-color: rgba(225,29,72,0.40); transform: translateY(-1px); }
+    .btn-logout svg { width: 14px; height: 14px; }
+
+
+    .stat-box {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 10px 20px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+      min-width: 80px;
+    }
+    .stat-box .num {
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--coral); line-height: 1;
+    }
+    .stat-box .lbl {
+      font-size: 0.68rem; color: var(--text-muted);
+      margin-top: 3px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    /* Notices */
+    .notices-wrap {
+      max-width: 880px;
+      margin: 2rem auto 0;
+      padding: 0 1.5rem;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 5rem 2rem;
+      animation: fadeUp 0.5s 0.2s ease both;
+    }
+
+    .empty-icon {
+      width: 68px; height: 68px;
+      background: var(--coral-light);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.25rem;
+    }
+    .empty-icon svg { width: 30px; height: 30px; color: var(--coral); }
+    .empty-state h3 { font-size: 1rem; font-weight: 600; }
+    .empty-state p  { margin-top: 0.35rem; font-size: 0.84rem; color: var(--text-muted); }
+
+    .empty-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 1.25rem; padding: 9px 20px;
+      background: linear-gradient(135deg, var(--green), #10b981);
+      color: #fff; border-radius: 10px; text-decoration: none;
+      font-size: 0.85rem; font-weight: 600;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(5,150,105,0.22);
+    }
+    .empty-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(5,150,105,0.30); }
+    .empty-btn svg { width: 14px; height: 14px; }
+
+    /* Notice card */
+    .notice-card {
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.1rem;
+      overflow: hidden;
+      transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .notice-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-hover);
+    }
+
+
+    .card-body {
+      padding: 1.2rem 1.5rem 1rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+
+    .card-num {
+      flex-shrink: 0;
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+      margin-top: 3px;
+    }
+
+    .notice-card:nth-child(4n+1) .card-num { background: var(--coral-light);  color: var(--coral);  }
+    .notice-card:nth-child(4n+2) .card-num { background: var(--violet-light); color: var(--violet); }
+    .notice-card:nth-child(4n+3) .card-num { background: var(--teal-light);   color: var(--teal);   }
+    .notice-card:nth-child(4n+0) .card-num { background: var(--amber-light);  color: var(--amber);  }
+
+    .card-content { flex: 1; min-width: 0; }
+
+    .dept-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 20px;
+      margin-bottom: 0.55rem;
+    }
+
+    .notice-card:nth-child(4n+1) .dept-pill { background: var(--coral-light);  color: var(--coral);  }
+    .notice-card:nth-child(4n+2) .dept-pill { background: var(--violet-light); color: var(--violet); }
+    .notice-card:nth-child(4n+3) .dept-pill { background: var(--teal-light);   color: var(--teal);   }
+    .notice-card:nth-child(4n+0) .dept-pill { background: var(--amber-light);  color: var(--amber);  }
+    .dept-pill svg { width: 11px; height: 11px; }
+
+    .card-title {
+      font-size: 1rem; font-weight: 600;
+      color: var(--text-dark); line-height: 1.3;
+      margin-bottom: 0.35rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .card-desc {
+      font-size: 0.845rem; color: var(--text-soft);
+      line-height: 1.6; font-weight: 300;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Card footer */
+    .card-footer {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface-2);
+      gap: 1rem; flex-wrap: wrap;
+    }
+
+    .meta-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+
+    .meta-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.76rem; color: var(--text-muted);
+    }
+    .meta-item svg { width: 13px; height: 13px; }
+    .meta-item strong { color: var(--text-soft); font-weight: 500; }
+
+    /* Action buttons */
+    .action-row { display: flex; align-items: center; gap: 7px; }
+
+    .act-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 13px;
+      border-radius: 8px;
+      font-size: 0.77rem; font-weight: 600;
+      text-decoration: none;
+      transition: all 0.18s;
+      border: 1.5px solid transparent;
+    }
+    .act-btn svg { width: 12px; height: 12px; }
+
+    .act-edit {
+      background: var(--indigo-light);
+      color: var(--indigo);
+      border-color: rgba(79,70,229,0.18);
+    }
+    .act-edit:hover {
+      background: #dce8fa;
+      border-color: rgba(79,70,229,0.38);
+      transform: translateY(-1px);
+    }
+
+    .act-delete {
+      background: var(--red-light);
+      color: var(--red);
+      border-color: rgba(225,29,72,0.18);
+    }
+    .act-delete:hover {
+      background: #fde2e8;
+      border-color: rgba(225,29,72,0.38);
+      transform: translateY(-1px);
+    }
+
+    /* Stagger */
+    .notice-card:nth-child(1) { animation-delay: 0.08s; }
+    .notice-card:nth-child(2) { animation-delay: 0.15s; }
+    .notice-card:nth-child(3) { animation-delay: 0.22s; }
+    .notice-card:nth-child(4) { animation-delay: 0.29s; }
+    .notice-card:nth-child(5) { animation-delay: 0.36s; }
+    .notice-card:nth-child(6) { animation-delay: 0.43s; }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #c7c5e8; border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+<!-- Topbar -->
+<nav class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="3"/>
+        <path d="M9 9h6M9 12h6M9 15h4"/>
+      </svg>
+    </div>
+    <span class="brand-name">Notice Board</span>
+    <span class="admin-chip">Admin</span>
+  </div>
+
+  <div class="topbar-right">
+    <a href="/createpost" class="btn-create">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Create Notice
+    </a>
+    <a href="/" class="btn-logout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Logout
+    </a>
+  </div>
+</nav>
+
+<!-- Notices -->
+<div class="notices-wrap">
+
+  <% if (notices.length === 0) { %>
+  <div class="empty-state">
+    <div class="empty-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="9" y1="13" x2="15" y2="13"/>
+        <line x1="9" y1="17" x2="12" y2="17"/>
+      </svg>
+    </div>
+    <h3>No notices yet</h3>
+    <p>Create your first notice to get started.</p>
+    <a href="/createpost" class="empty-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Create Notice
+    </a>
+  </div>
+  <% } %>
+
+  <% notices.forEach((n, i) => { %>
+  <div class="notice-card">
+    <div class="card-body">
+      <div class="card-num"><%= i + 1 %></div>
+      <div class="card-content">
+        <div class="dept-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+          <%= n.department %>
+        </div>
+        <div class="card-title"><%= n.title %></div>
+        <div class="card-desc"><%= n.description %></div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="meta-row">
+        <div class="meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <strong><%= n.author %></strong>
+        </div>
+        <% if (n.createdAt) { %>
+        <div class="meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <%= new Date(n.createdAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="action-row">
+        <a href="/admin/<%= n.id %>" class="act-btn act-edit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          Edit
+        </a>
+<form action="/admin/<%= n.id %>?_method=DELETE" method="post">
+ <button type="submit" class="act-btn act-delete" onclick="return confirm('Delete this notice?')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+          Delete
+ </button>
+</form>
+      </div>
+    </div>
+  </div>
+  <% }) %>
+
+</div>
+</body>
+</html>

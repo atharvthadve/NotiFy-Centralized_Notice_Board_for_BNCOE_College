@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Notice — Notice Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { 
+        box-sizing: border-box; margin: 0; padding: 0; 
+    }
+
+    :root {
+      --indigo:       #4f46e5;
+      --indigo-dark:  #3730a3;
+      --indigo-light: #eef2ff;
+      --indigo-mid:   #818cf8;
+      --violet:       #7c3aed;
+      --coral:        #f97316;
+      --coral-light:  #fff7ed;
+      --amber:        #d97706;
+      --amber-light:  #fffbeb;
+      --green:        #059669;
+      --green-dark:   #047857;
+      --red:          #e11d48;
+      --red-light:    #fff1f2;
+      --bg:           #f8f7ff;
+      --surface:      #ffffff;
+      --surface-2:    #f9f8ff;
+      --border:       rgba(79,70,229,0.11);
+      --border-focus: rgba(79,70,229,0.48);
+      --text-dark:    #1e1b4b;
+      --text-soft:    #6d6a8a;
+      --text-muted:   #a5a3bb;
+      --shadow-xl:    0 24px 80px rgba(0,0,0,0.18), 0 8px 24px rgba(0,0,0,0.10);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text-dark);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Blurred page backdrop — simulates page behind modal */
+    .page-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 14, 40, 0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 10;
+      animation: fadeIn 0.3s ease both;
+    }
+
+    /* Fake blurred background content */
+    .bg-content {
+      padding: 1.5rem;
+      filter: blur(1px);
+      user-select: none;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .bg-bar {
+      height: 60px;
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+    .bg-card {
+      height: 100px;
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Modal ── */
+    .modal-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 28px;
+      border: 1.5px solid rgba(79,70,229,0.12);
+      box-shadow: var(--shadow-xl);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.4s cubic-bezier(.22,1,.36,1) both;
+      position: relative;
+    }
+
+    .modal::-webkit-scrollbar { width: 5px; }
+    .modal::-webkit-scrollbar-track { background: transparent; }
+    .modal::-webkit-scrollbar-thumb { background: #c7c5e8; border-radius: 10px; }
+
+    /* Modal header */
+    .modal-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem 1.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      border-radius: 28px 28px 0 0;
+      z-index: 2;
+    }
+
+    .modal-icon {
+      width: 46px; height: 46px;
+      background: linear-gradient(135deg, var(--amber) 0%, #f59e0b 100%);
+      border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(217,119,6,0.28);
+    }
+    .modal-icon svg { width: 22px; height: 22px; color: #fff; }
+
+    .modal-title-wrap { flex: 1; }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem; font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+    }
+    .modal-title span { color: var(--amber); }
+
+    .modal-subtitle {
+      font-size: 0.78rem; color: var(--text-muted);
+      font-weight: 300; margin-top: 2px;
+    }
+
+    /* Close button */
+    .close-btn {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.18s;
+      flex-shrink: 0;
+    }
+    .close-btn svg { width: 16px; height: 16px; color: var(--text-soft); }
+    .close-btn:hover { background: var(--red-light); border-color: rgba(225,29,72,0.25); }
+    .close-btn:hover svg { color: var(--red); }
+
+    /* Changed badge */
+    .changed-badge {
+      display: none;
+      font-size: 0.67rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      background: var(--amber-light); color: var(--amber);
+      padding: 2px 8px; border-radius: 20px;
+      border: 1px solid rgba(217,119,6,0.20);
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .changed-badge.show { display: inline; }
+
+    /* Modal body */
+    .modal-body { padding: 1.5rem 1.75rem; }
+
+    /* Section label */
+    .section-label {
+      font-size: 0.67rem; font-weight: 700;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field-group { margin-bottom: 1rem; }
+    .field-group:last-of-type { margin-bottom: 0; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.77rem; font-weight: 600;
+      color: var(--text-soft); margin-bottom: 6px;
+    }
+
+    .req { color: var(--coral); margin-left: 2px; }
+
+    input[type="text"],
+    input[type="url"],
+    textarea {
+      width: 100%;
+      padding: 10px 13px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.875rem; font-weight: 400;
+      color: var(--text-dark);
+      background: var(--surface-2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      resize: none;
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--text-muted); }
+
+    input:focus, textarea:focus {
+      border-color: var(--border-focus);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.09);
+    }
+
+    input:hover:not(:focus), textarea:hover:not(:focus) {
+      border-color: rgba(79,70,229,0.24);
+    }
+
+    /* Highlight edited field */
+    input.dirty, textarea.dirty {
+      border-color: rgba(217,119,6,0.40);
+      background: var(--amber-light);
+    }
+    input.dirty:focus, textarea.dirty:focus {
+      border-color: var(--amber);
+      box-shadow: 0 0 0 3px rgba(217,119,6,0.12);
+      background: #fff;
+    }
+
+    textarea { height: 100px; padding-top: 11px; }
+
+    .form-divider {
+      height: 1px; background: var(--border);
+      margin: 1.25rem 0;
+    }
+
+    /* Modal footer */
+
+    .modal {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;    
+}
+
+.modal::-webkit-scrollbar {
+  display: none;            
+}
+
+    .modal-footer {
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 0.75rem;
+      padding: 1.25rem 1.75rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface-2);
+      border-radius: 0 0 28px 28px;
+      position: sticky;
+      bottom: 0;
+    }
+
+    .btn-cancel {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.83rem; font-weight: 500;
+      color: var(--text-soft);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.18s;
+    }
+    .btn-cancel:hover { background: var(--red-light); color: var(--red); border-color: rgba(225,29,72,0.25); }
+    .btn-cancel svg { width: 14px; height: 14px; }
+
+    .btn-save {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 22px;
+      background: linear-gradient(135deg, var(--amber) 0%, #f59e0b 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.85rem; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(217,119,6,0.28);
+    }
+    .btn-save svg { width: 15px; height: 15px; }
+    .btn-save:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(217,119,6,0.36); }
+    .btn-save:active { transform: translateY(0); }
+
+    /* method-override hidden input styling — none */
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(32px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    }
+  </style>
+</head>
+<body>
+<!-- Blurred fake background -->
+<div class="bg-content">
+  <div class="bg-bar"></div>
+  <div class="bg-card"></div>
+  <div class="bg-card"></div>
+  <div class="bg-card"></div>
+</div>
+
+<!-- Dark backdrop -->
+<div class="page-backdrop" onclick="window.location='/admin'"></div>
+
+<!-- Modal -->
+<div class="modal-wrap">
+  <div class="modal">
+
+  <!-- Header -->
+    <div class="modal-header">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"/>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+      </div>
+      <div class="modal-title-wrap">
+        <div class="modal-title">
+          Edit <span>Notice</span>
+          <span class="changed-badge" id="changedBadge">Unsaved</span>
+        </div>
+        <p class="modal-subtitle">ID: <%= n.id %> &nbsp;·&nbsp; <%= n.department %></p>
+      </div>
+      <a href="/admin" class="close-btn" title="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+
+      <!-- method-override for PATCH -->
+      <form action="/admin/<%= n.id %>?_method=PATCH" method="POST" id="editForm">
+
+        <p class="section-label">Notice Details</p>
+
+        <div class="field-group">
+          <label for="title">Title <span class="req">*</span></label>
+          <input type="text" id="title" name="title" value="<%= n.title %>" required />
+        </div>
+
+        <div class="field-group">
+          <label for="description">Description <span class="req">*</span></label>
+          <textarea id="description" name="description" required><%= n.description %></textarea>
+        </div>
+
+        <div class="field-group">
+          <label for="url">Resource URL</label>
+          <input type="text" id="url" name="url" value="<%= n.url || '' %>" placeholder="https://… (optional)" />
+        </div>
+
+        <div class="form-divider"></div>
+
+        <p class="section-label">Author Info</p>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="author">Author <span class="req">*</span></label>
+            <input type="text" id="author" name="author" value="<%= n.author %>" required />
+          </div>
+          <div class="field-group">
+            <label for="department">Department <span class="req">*</span></label>
+            <input type="text" id="department" name="department" value="<%= n.department %>" required />
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <a href="/admin" class="btn-cancel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Cancel
+      </a>
+      <button type="submit" form="editForm" class="btn-save">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Save Changes
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Mark fields dirty (amber) when user edits them + show "Unsaved" badge
+  const fields   = document.querySelectorAll('#editForm input, #editForm textarea');
+  const badge    = document.getElementById('changedBadge');
+  const origVals = {};
+
+  fields.forEach(f => { origVals[f.id] = f.value; });
+
+  fields.forEach(f => {
+    f.addEventListener('input', () => {
+      const changed = f.value !== origVals[f.id];
+      f.classList.toggle('dirty', changed);
+      // Show badge if any field is dirty
+      const anyDirty = [...fields].some(x => x.value !== origVals[x.id]);
+      badge.classList.toggle('show', anyDirty);
+    });
+  });
+
+  // ESC key to close
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') window.location = '/admin';
+  });
+</script>
+
+</body>
+</html>

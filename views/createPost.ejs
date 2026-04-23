@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Notice — Notice Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+       box-sizing: border-box; margin: 0; padding: 0; 
+      }
+
+    :root {
+      --indigo:       #4f46e5;
+      --indigo-dark:  #3730a3;
+      --indigo-light: #eef2ff;
+      --indigo-mid:   #818cf8;
+      --violet:       #7c3aed;
+      --coral:        #f97316;
+      --coral-light:  #fff7ed;
+      --teal:         #0d9488;
+      --teal-light:   #f0fdfa;
+      --green:        #059669;
+      --green-dark:   #047857;
+      --red:          #e11d48;
+      --red-light:    #fff1f2;
+      --bg:           #f8f7ff;
+      --surface:      #ffffff;
+      --surface-2:    #f9f8ff;
+      --border:       rgba(79,70,229,0.12);
+      --border-focus: rgba(79,70,229,0.50);
+      --text-dark:    #1e1b4b;
+      --text-soft:    #6d6a8a;
+      --text-muted:   #a5a3bb;
+      --shadow-sm:    0 1px 4px rgba(79,70,229,0.06);
+      --shadow-md:    0 8px 32px rgba(79,70,229,0.10), 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text-dark);
+      padding-bottom: 4rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -120px; left: -120px;
+      width: 480px; height: 480px;
+      background: radial-gradient(circle, rgba(79,70,229,0.10) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -80px; right: -80px;
+      width: 360px; height: 360px;
+      background: radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      animation: slideDown 0.4s ease both;
+    }
+
+    .topbar-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--coral) 0%, #fb923c 100%);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(249,115,22,0.28);
+    }
+    .brand-icon svg { width: 18px; height: 18px; color: #fff; }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; color: var(--text-dark);
+    }
+
+    .admin-chip {
+      font-size: 0.67rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--coral-light); color: var(--coral);
+      padding: 3px 9px; border-radius: 20px;
+      border: 1px solid rgba(249,115,22,0.18);
+    }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.81rem; font-weight: 500;
+      color: var(--text-soft); text-decoration: none;
+      padding: 6px 12px; border-radius: 9px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      transition: all 0.18s;
+    }
+    .back-link:hover { color: var(--indigo); border-color: rgba(79,70,229,0.28); background: var(--indigo-light); transform: translateX(-2px); }
+    .back-link svg { width: 14px; height: 14px; }
+
+
+    /* Form card */
+    .form-card {
+      max-width: 620px;
+      margin: 2rem auto 0;
+      padding: 0 1.5rem;
+      animation: fadeUp 0.5s 0.2s ease both;
+    }
+
+    .glass-form {
+      background: var(--surface);
+      border-radius: 24px;
+      border: 1.5px solid rgba(79,70,229,0.11);
+      box-shadow: var(--shadow-md);
+      padding: 2rem 2rem 1.5rem;
+    }
+
+    /* Section header inside form */
+    .form-section {
+      margin-bottom: 1.75rem;
+    }
+
+    .form-section:last-of-type { margin-bottom: 0; }
+
+    .section-heading {
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Field groups */
+    .field-group {
+      margin-bottom: 1rem;
+    }
+    .field-group:last-child { margin-bottom: 0; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+      letter-spacing: 0.01em;
+    }
+
+    .required-star { color: var(--coral); margin-left: 2px; }
+
+    input[type="text"],
+    input[type="url"],
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: var(--text-dark);
+      background: var(--surface-2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      resize: none;
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--text-muted); }
+
+    input:focus, textarea:focus {
+      border-color: var(--border-focus);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.10);
+    }
+
+    input:hover:not(:focus), textarea:hover:not(:focus) {
+      border-color: rgba(79,70,229,0.25);
+    }
+
+    textarea { height: 110px; padding-top: 12px; }
+
+    /* URL field hint */
+    .field-hint {
+      font-size: 0.73rem; color: var(--text-muted);
+      margin-top: 5px; display: flex; align-items: center; gap: 4px;
+    }
+    .field-hint svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+    /* Divider */
+    .form-divider {
+      height: 1px; background: var(--border);
+      margin: 1.75rem 0;
+    }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      box-shadow: 0 6px 20px rgba(79,70,229,0.28);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 1.5rem;
+      letter-spacing: 0.01em;
+    }
+
+    .submit-btn svg { width: 18px; height: 18px; }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(79,70,229,0.36);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 14px rgba(79,70,229,0.22);
+    }
+
+    /* Footer note */
+    .form-note {
+      text-align: center;
+      margin-top: 1.25rem;
+      font-size: 0.75rem; color: var(--text-muted);
+    }
+
+    /* Animations  */
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.7) rotate(-10deg); }
+      to   { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+  </style>
+</head>
+<body>
+
+<!--  Topbar  -->
+<nav class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="3"/>
+        <path d="M9 9h6M9 12h6M9 15h4"/>
+      </svg>
+    </div>
+    <span class="brand-name">Notice Board</span>
+    <span class="admin-chip">Admin</span>
+  </div>
+
+  <a href="/admin" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+    Back to Dashboard
+  </a>
+</nav>
+
+
+<!--  Form  -->
+
+<div class="form-card">
+  <div class="glass-form">
+    <form action="/student" method="POST" autocomplete="off">
+
+      <!-- Notice details -->
+      <div class="form-section">
+        <p class="section-heading">Notice Details</p>
+
+        <div class="field-group">
+          <label for="title">Title <span class="required-star">*</span></label>
+          <input type="text" id="title" name="title" required />
+        </div>
+
+        <div class="field-group">
+          <label for="description">Description <span class="required-star">*</span></label>
+          <textarea id="description" name="description" placeholder="Write the full notice content here…" required></textarea>
+        </div>
+
+        <div class="field-group">
+          <label for="url">Resource URL</label>
+          <input type="text" id="url" name="url" placeholder="https://drive.google.com/…  (optional)" />
+          <p class="field-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            Attach a PDF, image, or any web link. So students can preview it.
+          </p>
+        </div>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <div class="form-section">
+        <p class="section-heading">Author Info</p>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="author">Author Name <span class="required-star">*</span></label>
+            <input type="text" id="author" name="author" required />
+          </div>
+          <div class="field-group">
+            <label for="department">Department <span class="required-star">*</span></label>
+            <input type="text" id="department" name="department"  required />
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="submit-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/>
+        </svg>
+        Post Notice
+      </button>
+
+    </form>
+  </div>
+
+  <p class="form-note">Fields marked <span style="color:var(--coral);font-weight:600;">*</span> are required &nbsp;·&nbsp; Notice will be visible to all students immediately</p>
+</div>
+
+</body>
+</html>
