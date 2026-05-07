@@ -17,7 +17,8 @@ pool.getConnection((err, connection) => {
   } else {
     console.log("Connected to MySQL");
     
-    // Create notices table if it doesn't exist
+    // Creating notices schema
+    
     const createTableSQL = `
       CREATE TABLE IF NOT EXISTS notices (
         id INT AUTO_INCREMENT PRIMARY KEY,
