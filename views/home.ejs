@@ -1,31 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Notice Board</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after {
-       box-sizing: border-box; margin: 0; padding: 0; 
-      }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --indigo:       #4f46e5;
-      --indigo-dark:  #3730a3;
+      --indigo: #4f46e5;
+      --indigo-dark: #3730a3;
       --indigo-light: #eef2ff;
-      --indigo-mid:   #818cf8;
-      --coral:        #f97316;
-      --coral-light:  #fff7ed;
-      --teal:         #0d9488;
-      --teal-light:   #f0fdfa;
-      --bg:           #f8f7ff;
-      --surface:      #ffffff;
-      --border:       rgba(79,70,229,0.10);
-      --text-dark:    #1e1b4b;
-      --text-soft:    #6d6a8a;
-      --text-muted:   #a5a3bb;
+      --indigo-mid: #818cf8;
+      --coral: #f97316;
+      --coral-light: #fff7ed;
+      --teal: #0d9488;
+      --teal-light: #f0fdfa;
+      --bg: #f8f7ff;
+      --surface: #ffffff;
+      --border: rgba(79, 70, 229, 0.10);
+      --text-dark: #1e1b4b;
+      --text-soft: #6d6a8a;
+      --text-muted: #a5a3bb;
     }
 
     body {
@@ -44,18 +51,23 @@
     body::before {
       content: '';
       position: fixed;
-      top: -140px; left: -140px;
-      width: 520px; height: 520px;
-      background: radial-gradient(circle, rgba(99,102,241,0.13) 0%, transparent 70%);
+      top: -140px;
+      left: -140px;
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.13) 0%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
     }
+
     body::after {
       content: '';
       position: fixed;
-      bottom: -100px; right: -100px;
-      width: 420px; height: 420px;
-      background: radial-gradient(circle, rgba(249,115,22,0.09) 0%, transparent 70%);
+      bottom: -100px;
+      right: -100px;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.09) 0%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
     }
@@ -65,7 +77,7 @@
       z-index: 1;
       width: 100%;
       max-width: 440px;
-      animation: riseUp 0.7s cubic-bezier(.22,1,.36,1) both;
+      animation: riseUp 0.7s cubic-bezier(.22, 1, .36, 1) both;
     }
 
     .hero {
@@ -77,15 +89,20 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 74px; height: 74px;
+      width: 74px;
+      height: 74px;
       background: linear-gradient(135deg, var(--indigo) 0%, #7c3aed 100%);
       border-radius: 22px;
-      box-shadow: 0 10px 36px rgba(79,70,229,0.32);
+      box-shadow: 0 10px 36px rgba(79, 70, 229, 0.32);
       margin-bottom: 1.4rem;
-      animation: popIn 0.6s 0.15s cubic-bezier(.34,1.56,.64,1) both;
+      animation: popIn 0.6s 0.15s cubic-bezier(.34, 1.56, .64, 1) both;
     }
 
-    .logo-ring svg { width: 34px; height: 34px; color: #fff; }
+    .logo-ring svg {
+      width: 34px;
+      height: 34px;
+      color: #fff;
+    }
 
     .hero h1 {
       font-family: 'Playfair Display', serif;
@@ -96,7 +113,9 @@
       line-height: 1.15;
     }
 
-    .hero h1 span { color: var(--indigo); }
+    .hero h1 span {
+      color: var(--indigo);
+    }
 
     .hero p {
       margin-top: 0.55rem;
@@ -108,8 +127,8 @@
     .glass-card {
       background: var(--surface);
       border-radius: 24px;
-      border: 1.5px solid rgba(79,70,229,0.11);
-      box-shadow: 0 10px 48px rgba(79,70,229,0.09), 0 2px 8px rgba(0,0,0,0.04);
+      border: 1.5px solid rgba(79, 70, 229, 0.11);
+      box-shadow: 0 10px 48px rgba(79, 70, 229, 0.09), 0 2px 8px rgba(0, 0, 0, 0.04);
       padding: 2rem;
     }
 
@@ -134,42 +153,72 @@
       border: 1.5px solid transparent;
     }
 
-    .nav-btn:last-child { margin-bottom: 0; }
-    .nav-btn:hover { transform: translateY(-3px); }
-    .nav-btn:active { transform: translateY(0); }
+    .nav-btn:last-child {
+      margin-bottom: 0;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .nav-btn:active {
+      transform: translateY(0);
+    }
 
     .nav-btn.student {
       background: linear-gradient(135deg, #eef2ff 0%, #f0f4ff 100%);
-      border-color: rgba(79,70,229,0.16);
+      border-color: rgba(79, 70, 229, 0.16);
     }
+
     .nav-btn.student:hover {
-      box-shadow: 0 8px 28px rgba(79,70,229,0.16);
-      border-color: rgba(79,70,229,0.32);
+      box-shadow: 0 8px 28px rgba(79, 70, 229, 0.16);
+      border-color: rgba(79, 70, 229, 0.32);
     }
 
     .nav-btn.admin {
       background: linear-gradient(135deg, #fff7ed 0%, #fff4e6 100%);
-      border-color: rgba(249,115,22,0.16);
+      border-color: rgba(249, 115, 22, 0.16);
     }
+
     .nav-btn.admin:hover {
-      box-shadow: 0 8px 28px rgba(249,115,22,0.16);
-      border-color: rgba(249,115,22,0.32);
+      box-shadow: 0 8px 28px rgba(249, 115, 22, 0.16);
+      border-color: rgba(249, 115, 22, 0.32);
     }
 
     .btn-icon {
-      width: 46px; height: 46px;
+      width: 46px;
+      height: 46px;
       border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
     }
 
-    .student .btn-icon { background: rgba(79,70,229,0.12); }
-    .admin   .btn-icon { background: rgba(249,115,22,0.12); }
-    .btn-icon svg { width: 22px; height: 22px; }
-    .student .btn-icon svg { color: var(--indigo); }
-    .admin   .btn-icon svg { color: var(--coral); }
+    .student .btn-icon {
+      background: rgba(79, 70, 229, 0.12);
+    }
 
-    .btn-text { flex: 1; }
+    .admin .btn-icon {
+      background: rgba(249, 115, 22, 0.12);
+    }
+
+    .btn-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .student .btn-icon svg {
+      color: var(--indigo);
+    }
+
+    .admin .btn-icon svg {
+      color: var(--coral);
+    }
+
+    .btn-text {
+      flex: 1;
+    }
 
     .btn-text strong {
       display: block;
@@ -177,30 +226,63 @@
       font-weight: 600;
     }
 
-    .student .btn-text strong { color: #1e1b4b; }
-    .admin   .btn-text strong { color: #7c2d12; }
+    .student .btn-text strong {
+      color: #1e1b4b;
+    }
+
+    .admin .btn-text strong {
+      color: #7c2d12;
+    }
 
     .btn-text span {
       font-size: 0.78rem;
       font-weight: 300;
     }
-    .student .btn-text span { color: var(--text-soft); }
-    .admin   .btn-text span { color: #c2603a; }
 
-    .btn-arrow { transition: transform 0.2s; }
-    .nav-btn:hover .btn-arrow { transform: translateX(5px); }
-    .btn-arrow svg { width: 18px; height: 18px; }
-    .student .btn-arrow svg { color: var(--indigo-mid); }
-    .admin   .btn-arrow svg { color: var(--coral); }
+    .student .btn-text span {
+      color: var(--text-soft);
+    }
+
+    .admin .btn-text span {
+      color: #c2603a;
+    }
+
+    .btn-arrow {
+      transition: transform 0.2s;
+    }
+
+    .nav-btn:hover .btn-arrow {
+      transform: translateX(5px);
+    }
+
+    .btn-arrow svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .student .btn-arrow svg {
+      color: var(--indigo-mid);
+    }
+
+    .admin .btn-arrow svg {
+      color: var(--coral);
+    }
 
     .or-divider {
-      display: flex; align-items: center; gap: 0.75rem;
-      color: var(--text-muted); font-size: 0.74rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.74rem;
       margin: 0.9rem 0;
     }
-    .or-divider::before, .or-divider::after {
-      content: ''; flex: 1; height: 1px;
-      background: rgba(79,70,229,0.09);
+
+    .or-divider::before,
+    .or-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(79, 70, 229, 0.09);
     }
 
     .footer {
@@ -212,68 +294,94 @@
     }
 
     @keyframes riseUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     @keyframes popIn {
-      from { opacity: 0; transform: scale(0.7) rotate(-10deg); }
-      to   { opacity: 1; transform: scale(1) rotate(0deg); }
+      from {
+        opacity: 0;
+        transform: scale(0.7) rotate(-10deg);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
     }
   </style>
 </head>
+
 <body>
-<div class="wrap">
+  <div class="wrap">
 
-  <div class="hero">
-    <div class="logo-ring">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-      </svg>
+    <div class="hero">
+      <div class="logo-ring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+      </div>
+      <p>Stay updated with the latest announcements</p>
     </div>
-    <p>Stay updated with the latest announcements</p>
+
+    <div class="glass-card">
+      <p class="section-label">Select your portal</p>
+
+      <a href="/student" class="nav-btn student">
+        <div class="btn-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+            <path d="M6 12v5c3 3 9 3 12 0v-5" />
+          </svg>
+        </div>
+        <div class="btn-text">
+          <strong>Student Dashboard</strong>
+          <span>View notices &amp; announcements</span>
+        </div>
+        <div class="btn-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </div>
+      </a>
+
+      <div class="or-divider">or</div>
+
+      <a href="/admin" class="nav-btn admin">
+        <div class="btn-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="8" r="3" />
+            <path d="M20 21a8 8 0 1 0-16 0" />
+            <path d="M17 13l2 2 4-4" />
+          </svg>
+        </div>
+        <div class="btn-text">
+          <strong>Admin Panel</strong>
+          <span>Post &amp; manage notices</span>
+        </div>
+        <div class="btn-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </div>
+      </a>
+    </div>
+
+    <div class="footer">&copy; <%= new Date().getFullYear() %> BNCOE. All Rights Reserved</div>
   </div>
-
-  <div class="glass-card">
-    <p class="section-label">Select your portal</p>
-
-    <a href="/student" class="nav-btn student">
-      <div class="btn-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-          <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-        </svg>
-      </div>
-      <div class="btn-text">
-        <strong>Student Dashboard</strong>
-        <span>View notices &amp; announcements</span>
-      </div>
-      <div class="btn-arrow">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </div>
-    </a>
-
-    <div class="or-divider">or</div>
-
-    <a href="/admin" class="nav-btn admin">
-      <div class="btn-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="8" r="3"/>
-          <path d="M20 21a8 8 0 1 0-16 0"/>
-          <path d="M17 13l2 2 4-4"/>
-        </svg>
-      </div>
-      <div class="btn-text">
-        <strong>Admin Panel</strong>
-        <span>Post &amp; manage notices</span>
-      </div>
-      <div class="btn-arrow">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </div>
-    </a>
-  </div>
-
-  <div class="footer">&copy; <%= new Date().getFullYear() %> BNCOE. All Rights Reserved</div>
-</div>
 </body>
+
 </html>

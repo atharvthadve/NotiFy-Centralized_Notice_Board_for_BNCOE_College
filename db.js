@@ -8,7 +8,7 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
 });
 
 pool.getConnection((err, connection) => {
@@ -16,9 +16,8 @@ pool.getConnection((err, connection) => {
     console.error("DB connection failed:", err);
   } else {
     console.log("Connected to MySQL");
-    
+
     // Creating notices schema
-    
     const createTableSQL = `
       CREATE TABLE IF NOT EXISTS notices (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -31,7 +30,7 @@ pool.getConnection((err, connection) => {
         updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
     `;
-    
+
     connection.query(createTableSQL, (err) => {
       if (err) {
         console.error("Error creating table:", err);

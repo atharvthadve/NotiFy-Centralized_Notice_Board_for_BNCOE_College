@@ -10,20 +10,20 @@ const path = require("path");
 const connection = require("./db");
 
 // Middlewares
-app.use(methodOverride('_method'));
+app.use(methodOverride("_method"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
-~
+
 // Home
 app.get("/", (req, res) => {
   res.render("home");
 });
 
-// Student Dashboard (DB fetch)
+// Student Dashboard
 app.get("/student", (req, res) => {
   const sql = "SELECT * FROM notices ORDER BY createdAt DESC";
 
@@ -36,24 +36,32 @@ app.get("/student", (req, res) => {
   });
 });
 
+let islogin = false;
+
 // Admin Dashboard
 app.get("/admin", (req, res) => {
-  const sql = "SELECT * FROM notices ORDER BY createdAt DESC";
+  if (islogin) {
+    const sql = "SELECT * FROM notices ORDER BY createdAt DESC";
 
-  connection.query(sql, (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.send("DB Error");
-    }
-    res.render("admin", { notices: results });
-  });
+    connection.query(sql, (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.send("DB Error");
+      }
+      res.render("admin", { notices: results });
+    });
+  } else {
+    res.redirect("login");
+  }
 });
-
-
 
 // Create Post Page
 app.get("/createpost", (req, res) => {
-  res.render("createPost");
+  if (islogin) {
+    res.render("createPost");
+  } else {
+    res.redirect("login");
+  }
 });
 
 // Insert Post
@@ -77,25 +85,29 @@ app.post("/student", (req, res) => {
 
       console.log("Inserted ID:", result.insertId);
       res.redirect("/admin");
-    }
+    },
   );
 });
 
 //render edit page
 app.get("/admin/:id", (req, res) => {
-  const { id } = req.params;
-  const sql = "SELECT * FROM notices WHERE id = ?";
+  if (islogin) {
+    const { id } = req.params;
+    const sql = "SELECT * FROM notices WHERE id = ?";
 
-  connection.query(sql, [id], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.render("404");
-    }
-    if (result.length === 0) {
-      return res.render("404");
-    }
-    res.render("edit", { n: result[0] });
-  });
+    connection.query(sql, [id], (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.render("404");
+      }
+      if (result.length === 0) {
+        return res.render("404");
+      }
+      res.render("edit", { n: result[0] });
+    });
+  } else {
+    res.redirect("../login");
+  }
 });
 
 //edit notice
@@ -109,29 +121,54 @@ app.patch("/admin/:id", (req, res) => {
     WHERE id = ?
   `;
 
-  connection.query(sql, [title, description, url, author, department, id], (err, result) => {
+  connection.query(
+    sql,
+    [title, description, url, author, department, id],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.render("404");
+      }
+      res.redirect("/admin");
+    },
+  );
+});
+
+//Delete Notice
+
+app.delete("/admin/:id", (req, res) => {
+  let { id } = req.params;
+
+  let sql = "DELETE FROM notices WHERE id = ?";
+  connection.query(sql, [id], (err, result) => {
     if (err) {
-      console.error(err);
-      return res.render("404");
+      console.log(err);
+      return res.send("DB Error");
     }
     res.redirect("/admin");
   });
 });
 
-//Delete Notice
+app.get("/login", (req, res) => {
+  res.render("login");
+});
 
-app.delete("/admin/:id", (req, res)=>{
-  let { id } = req.params;
-
-  let sql = "DELETE FROM notices WHERE id = ?"
-connection.query(sql, [id], (err, result)=>{
-  if (err){
-    console.log(err);
-    return res.send("DB Error");
+//admin login
+app.post("/login", (req, res) => {
+  const { id, password } = req.body;
+  if (id === process.env.USER_ID && password === process.env.USER_PASSWORD) {
+    islogin = true;
+    res.redirect("/admin");
+  } else {
+    res.render("login.ejs", { error: true });
   }
-  res.redirect("/admin")
-})
-})
+});
+
+//admin logout
+app.get("/logout", (req, res) => {  
+  islogin = false;
+  res.redirect("/");
+});
 
 // Error Page
 app.use((req, res) => {
