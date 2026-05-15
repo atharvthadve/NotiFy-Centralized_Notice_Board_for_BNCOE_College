@@ -20,7 +20,7 @@ pool.getConnection((err, connection) => {
     // Creating notices schema
     const createTableSQL = `
       CREATE TABLE IF NOT EXISTS notices (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+        id CHAR(36),
         title VARCHAR(255) NOT NULL,
         description LONGTEXT NOT NULL,
         url VARCHAR(255),
