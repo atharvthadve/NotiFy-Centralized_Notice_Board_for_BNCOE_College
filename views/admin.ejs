@@ -152,6 +152,108 @@
           <% }) %>
 
   </div>
+
+<!-- # Skeleton Loading  -->
+  <style>
+    .skeleton-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1.2rem;
+    }
+    .skel-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.4rem 1.6rem;
+      border: 1px solid rgba(79,70,229,.09);
+      box-shadow: 0 1px 4px rgba(79,70,229,.06);
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+    }
+    .skel-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, #e8e6f8 25%, #f3f2fc 50%, #e8e6f8 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      flex-shrink: 0;
+    }
+    .skel-body { flex: 1; }
+    .skel-line {
+      background: linear-gradient(90deg, #e8e6f8 25%, #f3f2fc 50%, #e8e6f8 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px;
+      height: 13px;
+      margin-bottom: 10px;
+    }
+    .skel-line.pill  { height: 22px; width: 90px; border-radius: 20px; margin-bottom: 12px; }
+    .skel-line.title { height: 18px; width: 55%; margin-bottom: 12px; }
+    .skel-line.full  { width: 100%; }
+    .skel-line.med   { width: 70%; }
+    .skel-line.short { width: 38%; }
+    .skel-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+    }
+    .skel-btn {
+      width: 70px; height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #e8e6f8 25%, #f3f2fc 50%, #e8e6f8 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
+
+  <script>
+    (function() {
+      const wrap = document.querySelector('.notices-wrap');
+      if (!wrap) return;
+
+      const skWrap = document.createElement('div');
+      skWrap.className = 'skeleton-wrap';
+      skWrap.id = 'admin-skeleton';
+
+      for (let i = 0; i < 5; i++) {
+        skWrap.innerHTML += `
+          <div class="skel-card">
+            <div class="skel-num"></div>
+            <div class="skel-body">
+              <div class="skel-line pill"></div>
+              <div class="skel-line title"></div>
+              <div class="skel-line full"></div>
+              <div class="skel-line med"></div>
+              <div class="skel-foot">
+                <div class="skel-line short" style="margin:0;"></div>
+                <div style="display:flex;gap:8px;">
+                  <div class="skel-btn"></div>
+                  <div class="skel-btn"></div>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      wrap.style.visibility = 'hidden';
+      wrap.style.position = 'absolute';
+      wrap.parentNode.insertBefore(skWrap, wrap);
+
+      window.addEventListener('load', function() {
+        const sk = document.getElementById('admin-skeleton');
+        if (sk) sk.remove();
+        wrap.style.visibility = '';
+        wrap.style.position = '';
+      });
+    })();
+  </script>
+
 </body>
 
 </html>

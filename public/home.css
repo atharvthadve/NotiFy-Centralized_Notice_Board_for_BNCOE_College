@@ -6,26 +6,11 @@
         padding: 0;
     }
 
-    :root {
-        --indigo: #4f46e5;
-        --indigo-dark: #3730a3;
-        --indigo-light: #eef2ff;
-        --indigo-mid: #818cf8;
-        --coral: #f97316;
-        --coral-light: #fff7ed;
-        --teal: #0d9488;
-        --teal-light: #f0fdfa;
-        --bg: #f8f7ff;
-        --surface: #ffffff;
-        --border: rgba(79, 70, 229, 0.10);
-        --text-dark: #1e1b4b;
-        --text-soft: #6d6a8a;
-        --text-muted: #a5a3bb;
-    }
+
 
     body {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        background: var(--bg);
+        background: #f8f7ff;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -79,7 +64,7 @@
         justify-content: center;
         width: 74px;
         height: 74px;
-        background: linear-gradient(135deg, var(--indigo) 0%, #7c3aed 100%);
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
         border-radius: 22px;
         box-shadow: 0 10px 36px rgba(79, 70, 229, 0.32);
         margin-bottom: 1.4rem;
@@ -96,24 +81,24 @@
         font-family: 'Playfair Display', serif;
         font-size: 2.25rem;
         font-weight: 700;
-        color: var(--text-dark);
+        color: #1e1b4b;
         letter-spacing: -0.03em;
         line-height: 1.15;
     }
 
     .hero h1 span {
-        color: var(--indigo);
+        color: #4f46e5;
     }
 
     .hero p {
         margin-top: 0.55rem;
         font-size: 0.9rem;
-        color: var(--text-soft);
+        color: #6d6a8a;
         font-weight: 300;
     }
 
     .glass-card {
-        background: var(--surface);
+        background: #ffffff;
         border-radius: 24px;
         border: 1.5px solid rgba(79, 70, 229, 0.11);
         box-shadow: 0 10px 48px rgba(79, 70, 229, 0.09), 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -125,7 +110,7 @@
         font-weight: 600;
         letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: var(--text-muted);
+        color: #a5a3bb;
         margin-bottom: 1rem;
     }
 
@@ -197,11 +182,11 @@
     }
 
     .student .btn-icon svg {
-        color: var(--indigo);
+        color: #4f46e5;
     }
 
     .admin .btn-icon svg {
-        color: var(--coral);
+        color: #f97316;
     }
 
     .btn-text {
@@ -228,7 +213,7 @@
     }
 
     .student .btn-text span {
-        color: var(--text-soft);
+        color: #6d6a8a;
     }
 
     .admin .btn-text span {
@@ -249,18 +234,18 @@
     }
 
     .student .btn-arrow svg {
-        color: var(--indigo-mid);
+        color: #818cf8;
     }
 
     .admin .btn-arrow svg {
-        color: var(--coral);
+        color: #f97316;
     }
 
     .or-divider {
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        color: var(--text-muted);
+        color: #a5a3bb;
         font-size: 0.74rem;
         margin: 0.9rem 0;
     }
@@ -277,7 +262,7 @@
         text-align: center;
         margin-top: 1.75rem;
         font-size: 0.74rem;
-        color: var(--text-muted);
+        color: #a5a3bb;
         animation: riseUp 0.6s 0.3s ease both;
     }
 

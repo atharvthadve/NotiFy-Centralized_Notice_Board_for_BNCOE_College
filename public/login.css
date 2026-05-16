@@ -6,30 +6,12 @@
         padding: 0;
     }
 
-    :root {
-        --indigo: #4f46e5;
-        --indigo-d: #3730a3;
-        --indigo-l: #eef2ff;
-        --indigo-m: #818cf8;
-        --coral: #f97316;
-        --coral-l: #fff7ed;
-        --violet: #7c3aed;
-        --red: #e11d48;
-        --red-l: #fff1f2;
-        --bg: #f8f7ff;
-        --surface: #fff;
-        --surface-2: #f9f8ff;
-        --border: rgba(79, 70, 229, .09);
-        --tx: #1e1b4b;
-        --tx-s: #6d6a8a;
-        --tx-m: #a5a3bb;
-        --sh-md: 0 8px 40px rgba(79, 70, 229, .10), 0 2px 8px rgba(0, 0, 0, .04);
-    }
+
 
     body {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        background: var(--bg);
-        color: var(--tx);
+        background: #f8f7ff;
+        color: #1e1b4b;
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -85,7 +67,7 @@
         width: 62px;
         height: 62px;
         border-radius: 18px;
-        background: linear-gradient(135deg, var(--coral), #fb923c);
+        background: linear-gradient(135deg, #f97316, #fb923c);
         box-shadow: 0 8px 28px rgba(249, 115, 22, .30);
         margin-bottom: 1.1rem;
         animation: pop .6s .15s cubic-bezier(.34, 1.56, .64, 1) both;
@@ -102,26 +84,26 @@
         font-size: 1.75rem;
         font-weight: 700;
         letter-spacing: -.02em;
-        color: var(--tx);
+        color: #1e1b4b;
     }
 
     .hero h1 span {
-        color: var(--coral);
+        color: #f97316;
     }
 
     .hero p {
         margin-top: .35rem;
         font-size: .85rem;
-        color: var(--tx-m);
+        color: #a5a3bb;
         font-weight: 300;
     }
 
     /* card */
     .card {
-        background: var(--surface);
+        background: #fff;
         border: 1.5px solid rgba(79, 70, 229, .10);
         border-radius: 22px;
-        box-shadow: var(--sh-md);
+        box-shadow: 0 8px 40px rgba(79, 70, 229, .10), 0 2px 8px rgba(0, 0, 0, .04);
         padding: 1.75rem;
     }
 
@@ -137,7 +119,7 @@
         display: block;
         font-size: .75rem;
         font-weight: 600;
-        color: var(--tx-s);
+        color: #6d6a8a;
         margin-bottom: 6px;
     }
 
@@ -153,13 +135,13 @@
         transform: translateY(-50%);
         width: 15px;
         height: 15px;
-        color: var(--tx-m);
+        color: #a5a3bb;
         pointer-events: none;
         transition: color .2s;
     }
 
     .input-wrap:focus-within svg.fi {
-        color: var(--indigo);
+        color: #4f46e5;
     }
 
     .input-wrap input {
@@ -167,16 +149,16 @@
         padding: 10px 12px 10px 36px;
         font-family: inherit;
         font-size: .875rem;
-        color: var(--tx);
-        background: var(--surface-2);
-        border: 1.5px solid var(--border);
+        color: #1e1b4b;
+        background: #f9f8ff;
+        border: 1.5px solid rgba(79, 70, 229, .09);
         border-radius: 10px;
         outline: none;
         transition: border-color .2s, box-shadow .2s, background .2s;
     }
 
     .input-wrap input::placeholder {
-        color: var(--tx-m);
+        color: #a5a3bb;
     }
 
     .input-wrap input:focus {
@@ -195,7 +177,7 @@
         border: none;
         cursor: pointer;
         padding: 4px;
-        color: var(--tx-m);
+        color: #a5a3bb;
         border-radius: 6px;
         transition: color .18s, background .18s;
         display: flex;
@@ -203,8 +185,8 @@
     }
 
     .eye:hover {
-        color: var(--indigo);
-        background: var(--indigo-l);
+        color: #4f46e5;
+        background: #eef2ff;
     }
 
     .eye svg {
@@ -214,14 +196,14 @@
 
     .divider {
         height: 1px;
-        background: var(--border);
+        background: rgba(79, 70, 229, .09);
         margin: 1.25rem 0;
     }
 
     .submit-btn {
         width: 100%;
         padding: 11px;
-        background: linear-gradient(135deg, var(--coral), #fb923c);
+        background: linear-gradient(135deg, #f97316, #fb923c);
         color: #fff;
         border: none;
         border-radius: 11px;
@@ -256,12 +238,12 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        background: var(--red-l);
+        background: #fff1f2;
         border: 1.5px solid rgba(225, 29, 72, .18);
         border-radius: 10px;
         padding: .65rem .9rem;
         font-size: .8rem;
-        color: var(--red);
+        color: #e11d48;
         font-weight: 500;
         margin-bottom: 1.1rem;
     }
@@ -279,13 +261,13 @@
         gap: 5px;
         margin-top: 1.25rem;
         font-size: .78rem;
-        color: var(--tx-m);
+        color: #a5a3bb;
         text-decoration: none;
         transition: color .18s;
     }
 
     .back-link:hover {
-        color: var(--indigo);
+        color: #4f46e5;
     }
 
     .back-link svg {
